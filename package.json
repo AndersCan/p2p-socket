@@ -1,0 +1,23 @@
+{
+  "name": "p2p-socket",
+  "version": "0.0.1",
+  "description": "",
+  "scripts": {
+    "bin": "tsx bin.ts"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "prettier": {
+    "printWidth": 80
+  },
+  "dependencies": {
+    "@hyperswarm/dht": "^6.2.1",
+    "commander": "^9.4.0"
+  },
+  "devDependencies": {
+    "@types/node": "^18.7.14",
+    "prettier": "^2.5.1",
+    "tsx": "^3.9.0"
+  }
+}

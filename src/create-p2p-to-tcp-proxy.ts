@@ -45,18 +45,18 @@ export async function createP2PtoTCPProxy(props: Props) {
         callback(null, chunk);
       },
     });
-    const responseLogger = new PassThrough({
-      transform(chunk, encoding, callback) {
-        console.log("RESPONSE:", chunk.toString("utf-8"));
-        callback(null, chunk);
-      },
-    });
+    // const responseLogger = new PassThrough({
+    //   transform(chunk, encoding, callback) {
+    //     console.log("RESPONSE:", chunk.toString("utf-8"));
+    //     callback(null, chunk);
+    //   },
+    // });
 
     pipeline(
       noiseSocket,
       requestLogger,
       requestSocket,
-      responseLogger,
+      // responseLogger,
       noiseSocket,
       (err) => {
         if (err) {

@@ -4,7 +4,6 @@
 import DHT from "@hyperswarm/dht";
 import * as net from "net";
 import { pipeline, PassThrough } from "stream";
-import pump from "pump";
 
 interface Props {
   tcp: {
@@ -31,12 +30,12 @@ export function createTCPtoP2PProxy(props: Props) {
         callback(null, chunk);
       },
     });
-    const responseLogger = new PassThrough({
-      transform(chunk, encoding, callback) {
-        console.log("RESPONSE:", chunk.toString("utf-8"));
-        callback(null, chunk);
-      },
-    });
+    // const responseLogger = new PassThrough({
+    //   transform(chunk, encoding, callback) {
+    //     console.log("RESPONSE:", chunk.toString("utf-8"));
+    //     callback(null, chunk);
+    //   },
+    // });
 
     const p2pSocket = node.connect(props.remotePublicKey, {
       reusableSocket: false,
@@ -46,7 +45,7 @@ export function createTCPtoP2PProxy(props: Props) {
       socket,
       requestLogger,
       p2pSocket,
-      responseLogger,
+      // responseLogger,
       socket,
       (err) => {
         if (err) {

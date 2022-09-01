@@ -1,13 +1,22 @@
 {
   "name": "p2p-socket",
   "version": "0.0.1",
-  "description": "",
-  "scripts": {
-    "bin": "tsx bin.ts"
+  "description": "Share and connect to any socket over a P2P network powered by @hyperswarm/dht",
+  "type": "module",
+  "bin": {
+    "p2p-socket": "./build/bin.js"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "scripts": {
+    "bin": "tsx bin.ts",
+    "build": "tsx build.ts"
+  },
+  "keywords": [
+    "p2p",
+    "socket",
+    "hyperswarm"
+  ],
+  "author": "AndersCan",
+  "license": "MIT",
   "prettier": {
     "printWidth": 80
   },
@@ -17,6 +26,7 @@
   },
   "devDependencies": {
     "@types/node": "^18.7.14",
+    "esbuild": "^0.15.6",
     "prettier": "^2.5.1",
     "tsx": "^3.9.0"
   }

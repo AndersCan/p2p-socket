@@ -1,10 +1,11 @@
 // TypeScript (.ts)
 import { Command } from "commander";
-import { createWriteStream, fstat } from "fs";
+import { createWriteStream } from "fs";
 import { readFile } from "fs/promises";
 import { createKeyPair } from "./src/create-key-pair";
 import { createP2PtoTCPProxy } from "./src/create-p2p-to-tcp-proxy.js";
 import { createTCPtoP2PProxy } from "./src/create-tcp-to-p2p-proxy";
+import type { Identity, SerializedIdentity } from "./src/identity";
 
 const program = new Command();
 
@@ -96,23 +97,9 @@ function addShareCommand(program: Command) {
       );
 
       console.log(
-        `npx tcp-over-p2p connect ${identity.keyPair.publicKey.toString("hex")}`
+        `npx p2p-socket connect ${identity.keyPair.publicKey.toString("hex")}`
       );
     });
-}
-
-interface Identity {
-  keyPair: {
-    publicKey: Buffer;
-    secretKey: Buffer;
-  };
-}
-
-interface SerializedIdentity {
-  keyPair: {
-    publicKey: string;
-    secretKey: string;
-  };
 }
 
 async function getLocalIdentity(): Promise<Identity> {

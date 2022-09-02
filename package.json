@@ -6,9 +6,13 @@
   "bin": {
     "p2p-socket": "./build/bin.js"
   },
+  "files": [
+    "build/"
+  ],
   "scripts": {
     "bin": "tsx bin.ts",
-    "build": "tsx build.ts"
+    "build": "tsx build.ts",
+    "prepublishOnly": "npm run build"
   },
   "keywords": [
     "p2p",

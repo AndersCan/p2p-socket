@@ -13,7 +13,7 @@ const program = new Command();
 program
   .name("p2p-socket")
   .description("Use the @hyperswarm/dht to connect to peers from anywhere")
-  .version("0.0.1");
+  .version("0.0.4");
 
 addInitCommand(program);
 addShareCommand(program);
@@ -76,18 +76,25 @@ function addConnectCommand(program: Command) {
     .action(async (options) => {
       const { host, port, remoteKey } = options;
 
-      await createTCPtoP2PProxy({
+      const tcpServer = await createTCPtoP2PProxy({
         tcp: {
           host,
           port: Number(port),
         },
         remotePublicKey: Buffer.from(remoteKey, "hex"),
       });
+      const address = tcpServer.address();
+
+      let listenPort: number = 0;
+      if (address && typeof address === "object") {
+        listenPort = address.port;
+      }
+
       console.log(
         kleur
           .green()
           .bold()
-          .underline(`P2P proxy reachable via ${host}:${port}`)
+          .underline(`P2P proxy reachable via ${host}:${listenPort}`)
       );
     });
 }
@@ -106,8 +113,10 @@ function addShareCommand(program: Command) {
     )
     .action(async (options) => {
       const identity = await getLocalIdentity();
+
       const { host, port } = options;
-      await createP2PtoTCPProxy({
+
+      const proxy = await createP2PtoTCPProxy({
         tcp: {
           host,
           port: Number(port),
@@ -115,10 +124,12 @@ function addShareCommand(program: Command) {
         keyPair: identity.keyPair,
       });
 
-      const remoteKey = identity.keyPair.publicKey.toString("hex");
+      const remoteKey = proxy.hostAndKeyPair.publicKey.toString("hex");
 
       console.log(
-        kleur.dim().underline(`You are now sharing ${host}:${port} with P2P`)
+        kleur
+          .dim()
+          .underline(`You are now sharing ${host}:${port} with P2P network`)
       );
       console.log();
       console.log(kleur.bold(`Peers can connect to you by running:`));

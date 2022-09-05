@@ -35,7 +35,7 @@ function addInitCommand(program) {
     .action((options) => {
       const path = "./identity.json";
 
-      if (hasIdentity()) {
+      if (hasLocalIdentity()) {
         console.error(
           kleur.red(
             `${path} already exists. Please delete it if you want a new identity`
@@ -112,7 +112,7 @@ function addShareCommand(program: Command) {
       "localhost"
     )
     .action(async (options) => {
-      const identity = await getLocalIdentity();
+      const identity = await getIdentity();
 
       const { host, port } = options;
 
@@ -142,6 +142,17 @@ function addShareCommand(program: Command) {
     });
 }
 
+
+async function getIdentity(): Promise<Identity> {
+
+  if (!hasLocalIdentity()) {
+    return {
+      keyPair: createKeyPair()
+    }
+  }
+  return getLocalIdentity()
+}
+
 async function getLocalIdentity(): Promise<Identity> {
   const data = await readFile("./identity.json");
 
@@ -155,7 +166,7 @@ async function getLocalIdentity(): Promise<Identity> {
   };
 }
 
-function hasIdentity() {
+function hasLocalIdentity() {
   const path = "./identity.json";
   return existsSync(path);
 }

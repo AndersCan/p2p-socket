@@ -48,12 +48,12 @@ export async function createP2PtoTCPProxy(props: Props) {
       // keepAlive: false,
     });
 
-    const requestLogger = new PassThrough({
-      transform(chunk, encoding, callback) {
-        console.log("REQUEST:", chunk.toString("utf-8"));
-        callback(null, chunk);
-      },
-    });
+    // const requestLogger = new PassThrough({
+    //   transform(chunk, encoding, callback) {
+    //     console.log("REQUEST:", chunk.toString("utf-8"));
+    //     callback(null, chunk);
+    //   },
+    // });
     // const responseLogger = new PassThrough({
     //   transform(chunk, encoding, callback) {
     //     console.log("RESPONSE:", chunk.toString("utf-8"));
@@ -63,7 +63,7 @@ export async function createP2PtoTCPProxy(props: Props) {
 
     pipeline(
       noiseSocket,
-      requestLogger,
+      // requestLogger,
       requestSocket,
       // responseLogger,
       noiseSocket,

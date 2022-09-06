@@ -4,9 +4,9 @@
 import DHT from "@hyperswarm/dht";
 import { connect } from "net";
 import { createKeyPair } from "./create-key-pair";
-import { PassThrough, pipeline } from "stream";
+import { pipeline } from "stream";
 import kleur from "kleur";
-
+import { getLogger } from "./logger";
 interface Props {
   tcp: {
     host: string;
@@ -32,7 +32,7 @@ export async function createP2PtoTCPProxy(props: Props) {
       // if you do return false, else return true
       // remoteHandshakePayload contains their ip and some more info
       // console.log("firewall: ", { remotePublicKey, remoteHandshakePayload });
-      console.log(kleur.bgGreen(`${remotePublicKey} connected`));
+      getLogger().info(kleur.bgGreen(`${remotePublicKey} connected`));
       return false;
     },
   });
@@ -44,37 +44,14 @@ export async function createP2PtoTCPProxy(props: Props) {
     const requestSocket = connect({
       port,
       host,
-      // allowHalfOpen: false,
-      // keepAlive: false,
     });
 
-    // const requestLogger = new PassThrough({
-    //   transform(chunk, encoding, callback) {
-    //     console.log("REQUEST:", chunk.toString("utf-8"));
-    //     callback(null, chunk);
-    //   },
-    // });
-    // const responseLogger = new PassThrough({
-    //   transform(chunk, encoding, callback) {
-    //     console.log("RESPONSE:", chunk.toString("utf-8"));
-    //     callback(null, chunk);
-    //   },
-    // });
-
-    pipeline(
-      noiseSocket,
-      // requestLogger,
-      requestSocket,
-      // responseLogger,
-      noiseSocket,
-      (err) => {
-        if (err) {
-          console.error("pipeline failed: ", err);
-          return;
-        }
-        console.log("pipeline done");
+    pipeline(noiseSocket, requestSocket, noiseSocket, (err) => {
+      if (err) {
+        getLogger().error("pipeline failed: ", err);
+        return;
       }
-    );
+    });
   });
 
   await p2pServer.listen(hostAndKeyPair);

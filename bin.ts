@@ -142,15 +142,14 @@ function addShareCommand(program: Command) {
     });
 }
 
-
 async function getIdentity(): Promise<Identity> {
-
-  if (!hasLocalIdentity()) {
-    return {
-      keyPair: createKeyPair()
-    }
+  if (hasLocalIdentity()) {
+    return getLocalIdentity();
   }
-  return getLocalIdentity()
+
+  return {
+    keyPair: createKeyPair(),
+  };
 }
 
 async function getLocalIdentity(): Promise<Identity> {

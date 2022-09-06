@@ -13,7 +13,7 @@ const program = new Command();
 program
   .name("p2p-socket")
   .description("Use the @hyperswarm/dht to connect to peers from anywhere")
-  .version("0.0.4");
+  .version("0.0.6");
 
 addInitCommand(program);
 addShareCommand(program);

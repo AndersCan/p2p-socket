@@ -1,5 +1,8 @@
 import { build } from "esbuild";
+import { replace } from "esbuild-plugin-replace";
+import fs from "node:fs";
 
+const pkg = JSON.parse(fs.readFileSync("./package.json", "utf-8"));
 let makeAllPackagesExternalPlugin = {
   name: "make-all-packages-external",
   setup(build) {
@@ -21,5 +24,10 @@ build({
   target: "es2020",
   outdir: "./build/",
   banner: { js: "#!/usr/bin/env node" },
-  plugins: [makeAllPackagesExternalPlugin],
+  plugins: [
+    makeAllPackagesExternalPlugin,
+    replace({
+      __build_version__: pkg.version,
+    }),
+  ],
 });

@@ -13,7 +13,7 @@ const program = new Command();
 program
   .name("p2p-socket")
   .description("Use the @hyperswarm/dht to connect to peers from anywhere")
-  .version("0.0.6");
+  .version("__build_version__");
 
 addInitCommand(program);
 addShareCommand(program);
@@ -137,7 +137,9 @@ function addShareCommand(program: Command) {
       console.log(
         kleur
           .italic()
-          .underline(`npx p2p-socket connect --remote-key ${remoteKey}`)
+          .underline(
+            `npx p2p-socket connect --port ${port} --remote-key ${remoteKey}`
+          )
       );
     });
 }

@@ -1,6 +1,6 @@
 {
   "name": "p2p-socket",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "Share and connect to any socket over a P2P network powered by @hyperswarm/dht",
   "type": "module",
   "bin": {

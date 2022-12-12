@@ -7,25 +7,31 @@ import { createP2PtoTCPProxy } from "./src/create-p2p-to-tcp-proxy.js";
 import { createTCPtoP2PProxy } from "./src/create-tcp-to-p2p-proxy";
 import kleur from "kleur";
 import type { Identity, SerializedIdentity } from "./src/identity";
+import { APP_VERSION, DEBUG } from "./env";
+import { setLogLevel } from "./src/logger";
+
+if (DEBUG) {
+  setLogLevel(30);
+}
 
 const program = new Command();
 
 program
   .name("p2p-socket")
   .description("Use the @hyperswarm/dht to connect to peers from anywhere")
-  .version("__build_version__");
+  .version(APP_VERSION);
 
-addInitCommand(program);
+addIdCommand(program);
 addShareCommand(program);
 addConnectCommand(program);
 
 program.parse();
 
-function addInitCommand(program) {
+function addIdCommand(program) {
   program
-    .command("init")
+    .command("id")
     .description(
-      "Creates and stores an identity on this machine. The identity is secret!"
+      "Creates an identity.json file for static remote-key. The identity is secret!"
     )
     .option(
       "-s, --seed [seed...]",
@@ -46,7 +52,7 @@ function addInitCommand(program) {
 
       const parsedSeed = options.seed ? options.seed.join("") : undefined;
 
-      const writeStream = createWriteStream(path);
+      const writeStream = createWriteStream(path, { encoding: "utf-8" });
 
       writeStream.once("close", () => {
         console.log(
@@ -138,7 +144,7 @@ function addShareCommand(program: Command) {
         kleur
           .italic()
           .underline(
-            `npx p2p-socket connect --port ${port} --remote-key ${remoteKey}`
+            `npx p2p-socket@${APP_VERSION} connect --port ${port} --remote-key ${remoteKey}`
           )
       );
     });

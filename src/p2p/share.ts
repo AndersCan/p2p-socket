@@ -5,7 +5,7 @@ import { DHT } from "./dht";
 import { connect } from "net";
 import { createKeyPair } from "../create-key-pair";
 import { Duplex, pipeline } from "stream";
-import * as kleur from "kleur";
+import kleur from "kleur";
 import { getLogger } from "../logger";
 interface Props {
   tcp: {

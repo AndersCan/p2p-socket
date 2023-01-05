@@ -5,7 +5,7 @@ import { readFile } from "fs/promises";
 import { createKeyPair } from "./src/create-key-pair.js";
 import { share } from "./src/p2p/share.js";
 import { connect } from "./src/p2p/connect.js";
-import * as kleur from "kleur";
+import kleur from "kleur";
 import type { Identity, SerializedIdentity } from "./src/identity.js";
 import { APP_VERSION, DEBUG } from "./env.js";
 import { setLogLevel } from "./src/logger.js";

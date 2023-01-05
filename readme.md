@@ -1,12 +1,14 @@
 # p2p-socket
 
-Share and connect to any socket over a P2P network powered by `@hyperswarm/dht`
+Use the @hyperswarm/dht to share and connect to p2p-sockets.
 
 Run `npx p2p-socket --help` for usage instuctions
 
 ## Quick start
 
-### Share port
+A p2p-socket is just a eazy way to connect to another machine over the internet.
+
+### Share p2p-socket
 
 To share `localhost:3000` with the P2P network run:
 
@@ -16,37 +18,21 @@ npx p2p-socket share --port 3000
 
 This will print the connection information that you will have to share with whoever you want to connect to your machine.
 
-### Connect to port
+### Connect to p2p-socket
 
-To connect to a remote machine run:
+To connect p2p-socket
 
 ```bash
 npx p2p-socket connect --port 3000 --remote-key <remote-key>
 ```
 
+The p2p-socket is now available on `localhost:3000`.
+
 ## Persistant remote-key
 
-Avoid having to reshare your connection information each time you restart your server.
+To avoid having to reshare your connection information each time you restart your server, run `npx p2p-socket create-id`. This will create an `identity.json` file locally. This will enable a consistent `remote-key`.
 
-Run `p2p-socket init` to create a `identity.json`. This will enable a consistent `remote-key` when sharing the _same port_.
-
----
-
-```bash
-Usage: p2p-socket [options] [command]
-
-Use the @hyperswarm/dht to connect to peers from anywhere
-
-Options:
-  -V, --version      output the version number
-  -h, --help         display help for command
-
-Commands:
-  init [options]     Creates and stores an identity on this machine. The identity is secret!
-  share [options]    Share something with the P2P network. Peers will use your publicKey to connect
-  connect [options]  Connect over P2P network to a shared resource
-  help [command]     display help for command
-```
+> Note: The key will change when changing the `port`.
 
 ## Acknowledgements
 

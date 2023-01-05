@@ -3,6 +3,7 @@ import { replace } from "esbuild-plugin-replace";
 import fs from "node:fs";
 
 const pkg = JSON.parse(fs.readFileSync("./package.json", "utf-8"));
+
 let makeAllPackagesExternalPlugin = {
   name: "make-all-packages-external",
   setup(build) {
@@ -17,7 +18,7 @@ let makeAllPackagesExternalPlugin = {
 build({
   bundle: true,
   preserveSymlinks: true,
-  entryPoints: ["./bin.ts"],
+  entryPoints: ["./bin.ts", "./index.ts"],
   external: ["./node_modules/*"],
   platform: "node",
   format: "esm",

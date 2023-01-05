@@ -1,4 +1,4 @@
-import DHT from "@hyperswarm/dht";
+import { DHT } from "./src/p2p/dht";
 import { createKeyPair } from "./src/create-key-pair";
 const seed = process.argv[2];
 

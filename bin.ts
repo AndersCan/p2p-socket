@@ -2,36 +2,38 @@
 import { Command } from "commander";
 import { createWriteStream, existsSync } from "fs";
 import { readFile } from "fs/promises";
-import { createKeyPair } from "./src/create-key-pair";
-import { createP2PtoTCPProxy } from "./src/create-p2p-to-tcp-proxy.js";
-import { createTCPtoP2PProxy } from "./src/create-tcp-to-p2p-proxy";
-import kleur from "kleur";
-import type { Identity, SerializedIdentity } from "./src/identity";
-import { APP_VERSION, DEBUG } from "./env";
-import { setLogLevel } from "./src/logger";
+import { createKeyPair } from "./src/create-key-pair.js";
+import { share } from "./src/p2p/share.js";
+import { connect } from "./src/p2p/connect.js";
+import * as kleur from "kleur";
+import type { Identity, SerializedIdentity } from "./src/identity.js";
+import { APP_VERSION, DEBUG } from "./env.js";
+import { setLogLevel } from "./src/logger.js";
 
 if (DEBUG) {
   setLogLevel(30);
 }
 
+const IdentityPath = "./identity.json";
+
 const program = new Command();
 
 program
   .name("p2p-socket")
-  .description("Use the @hyperswarm/dht to connect to peers from anywhere")
+  .description("Use the @hyperswarm/dht to share and connect to p2p-sockets")
   .version(APP_VERSION);
 
-addIdCommand(program);
 addShareCommand(program);
 addConnectCommand(program);
+addIdCommand(program);
 
 program.parse();
 
 function addIdCommand(program) {
   program
-    .command("id")
+    .command("create-id")
     .description(
-      "Creates an identity.json file for static remote-key. The identity is secret!"
+      "Creates an identity.json file so that your shared p2p-sockets will have the same connect key. The identity.json file should be treated as a secret!"
     )
     .option(
       "-s, --seed [seed...]",
@@ -39,12 +41,10 @@ function addIdCommand(program) {
       []
     )
     .action((options) => {
-      const path = "./identity.json";
-
       if (hasLocalIdentity()) {
         console.error(
           kleur.red(
-            `${path} already exists. Please delete it if you want a new identity`
+            `${IdentityPath} already exists. Please delete it if you want a new identity`
           )
         );
         return;
@@ -52,11 +52,16 @@ function addIdCommand(program) {
 
       const parsedSeed = options.seed ? options.seed.join("") : undefined;
 
-      const writeStream = createWriteStream(path, { encoding: "utf-8" });
+      const writeStream = createWriteStream(IdentityPath, {
+        encoding: "utf-8",
+      });
 
       writeStream.once("close", () => {
         console.log(
-          kleur.green().bold().underline(`New identity created at ${path}`)
+          kleur
+            .green()
+            .bold()
+            .underline(`New identity created at ${IdentityPath}`)
         );
       });
       const newKeyPair = createKeyPair(parsedSeed);
@@ -75,14 +80,14 @@ function addIdCommand(program) {
 function addConnectCommand(program: Command) {
   program
     .command("connect")
-    .description("Connect over P2P network to a shared resource")
-    .requiredOption("-k, --remote-key <key>", "[required] Remote Public key")
+    .description("Connect to a p2p-socket")
+    .requiredOption("-k, --remote-key <key>", "[required] Remote share key")
     .option("-h, --host <host>", "[optional] default: localhost", "localhost")
     .option("-p, --port <port>", "[optional] default: 0", "0")
     .action(async (options) => {
       const { host, port, remoteKey } = options;
 
-      const tcpServer = await createTCPtoP2PProxy({
+      const tcpServer = await connect({
         tcp: {
           host,
           port: Number(port),
@@ -122,7 +127,7 @@ function addShareCommand(program: Command) {
 
       const { host, port } = options;
 
-      const proxy = await createP2PtoTCPProxy({
+      const proxy = await share({
         tcp: {
           host,
           port: Number(port),
@@ -161,19 +166,18 @@ async function getIdentity(): Promise<Identity> {
 }
 
 async function getLocalIdentity(): Promise<Identity> {
-  const data = await readFile("./identity.json");
+  const dataBuffer = await readFile(IdentityPath);
 
-  const datax: SerializedIdentity = JSON.parse(data.toString("utf-8"));
+  const data: SerializedIdentity = JSON.parse(dataBuffer.toString("utf-8"));
 
   return {
     keyPair: {
-      publicKey: Buffer.from(datax.keyPair.publicKey, "hex"),
-      secretKey: Buffer.from(datax.keyPair.secretKey, "hex"),
+      publicKey: Buffer.from(data.keyPair.publicKey, "hex"),
+      secretKey: Buffer.from(data.keyPair.secretKey, "hex"),
     },
   };
 }
 
 function hasLocalIdentity() {
-  const path = "./identity.json";
-  return existsSync(path);
+  return existsSync(IdentityPath);
 }

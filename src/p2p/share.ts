@@ -1,12 +1,12 @@
 /**
  * Create a host machine that accepts connections and redirects them to localhost something
  **/
-import DHT from "@hyperswarm/dht";
+import { DHT } from "./dht";
 import { connect } from "net";
-import { createKeyPair } from "./create-key-pair";
-import { pipeline } from "stream";
-import kleur from "kleur";
-import { getLogger } from "./logger";
+import { createKeyPair } from "../create-key-pair";
+import { Duplex, pipeline } from "stream";
+import * as kleur from "kleur";
+import { getLogger } from "../logger";
 interface Props {
   tcp: {
     host: string;
@@ -17,7 +17,10 @@ interface Props {
     publicKey: Buffer;
   };
 }
-export async function createP2PtoTCPProxy(props: Props) {
+/**
+ * Share a p2p-socket
+ */
+export async function share(props: Props) {
   const node = new DHT();
 
   const { host, port } = props.tcp;
@@ -27,7 +30,7 @@ export async function createP2PtoTCPProxy(props: Props) {
 
   // create a server to listen for secure connections
   const p2pServer = node.createServer({
-    firewall(remotePublicKey, remoteHandshakePayload) {
+    firewall(remotePublicKey: string, remoteHandshakePayload: any) {
       // validate if you want a connection from remotePublicKey
       // if you do return false, else return true
       // remoteHandshakePayload contains their ip and some more info
@@ -37,7 +40,7 @@ export async function createP2PtoTCPProxy(props: Props) {
     },
   });
 
-  p2pServer.on("connection", function (noiseSocket) {
+  p2pServer.on("connection", function (noiseSocket: Duplex) {
     const host = props.tcp.host;
     const port = props.tcp.port;
 

@@ -1,10 +1,10 @@
 /**
  * Create a host machine that accepts connections and redirects them to localhost something
  **/
-import DHT from "@hyperswarm/dht";
+import { DHT } from "./dht";
 import * as net from "net";
 import { pipeline } from "stream";
-import { getLogger } from "./logger";
+import { getLogger } from "../logger";
 
 interface Props {
   tcp: {
@@ -13,7 +13,10 @@ interface Props {
   };
   remotePublicKey: Buffer;
 }
-export function createTCPtoP2PProxy(props: Props) {
+/**
+ * Connect to a p2p-socket
+ */
+export function connect(props: Props) {
   const node = new DHT();
 
   const { host, port } = props.tcp;

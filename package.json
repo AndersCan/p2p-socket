@@ -1,8 +1,12 @@
 {
   "name": "p2p-socket",
   "version": "0.0.8",
-  "description": "Share and connect to any socket over a P2P network powered by @hyperswarm/dht",
+  "description": "Use the @hyperswarm/dht to share and connect to p2p-sockets.",
   "type": "module",
+  "exports": {
+    ".": "./build/index.js"
+  },
+  "types": "./build/index.d.ts",
   "bin": {
     "p2p-socket": "./build/bin.js"
   },
@@ -12,7 +16,9 @@
   "scripts": {
     "bin": "tsx bin.ts",
     "dev": "tsx bin.ts",
-    "build": "tsx build.ts",
+    "build": "concurrently --kill-others-on-fail \"npm:build:*\"",
+    "build:js": "tsx build.ts",
+    "build:tsc": "npx tsc --project tsconfig.json",
     "prepublishOnly": "npm run build",
     "create-tape": "docker run --rm -v $PWD:/vhs ghcr.io/charmbracelet/vhs tapes/readme.tape"
   },
@@ -27,17 +33,19 @@
     "printWidth": 80
   },
   "dependencies": {
-    "@hyperswarm/dht": "^6.3.4",
+    "@hyperswarm/dht": "^6.4.1",
     "commander": "^9.4.1",
     "kleur": "^4.1.5"
   },
   "devDependencies": {
     "@changesets/cli": "^2.25.2",
     "@types/node": "^18.11.13",
+    "concurrently": "^7.6.0",
     "esbuild": "^0.15.18",
     "esbuild-plugin-replace": "^1.3.0",
     "prettier": "^2.8.1",
-    "tsx": "^3.12.1"
+    "tsx": "^3.12.1",
+    "typescript": "^4.9.4"
   },
   "volta": {
     "node": "18.12.1",

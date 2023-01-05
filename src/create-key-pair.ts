@@ -1,4 +1,4 @@
-import DHT from "@hyperswarm/dht";
+import { DHT } from "./p2p/dht";
 
 export function createKeyPair(seed?: string) {
   return seed ? DHT.keyPair(createSeed(seed)) : DHT.keyPair();

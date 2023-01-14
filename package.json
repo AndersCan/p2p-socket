@@ -1,6 +1,6 @@
 {
   "name": "p2p-socket",
-  "version": "0.0.13",
+  "version": "0.0.14",
   "description": "Use the @hyperswarm/dht to share and connect to p2p-sockets.",
   "type": "module",
   "exports": {

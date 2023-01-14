@@ -1,5 +1,11 @@
 # p2p-socket
 
+## 0.0.14
+
+### Patch Changes
+
+- 3eae2ea: fix Maximum call stack size exceeded
+
 ## 0.0.12
 
 ### Patch Changes

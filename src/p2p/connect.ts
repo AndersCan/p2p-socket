@@ -1,10 +1,10 @@
 /**
  * Create a host machine that accepts connections and redirects them to localhost something
  **/
-import { DHT } from "./dht";
+import { DHT } from "./dht.js";
 import * as net from "net";
 import { pipeline } from "stream";
-import { getLogger } from "../logger";
+import { getLogger } from "../logger.js";
 
 interface Props {
   tcp: {
@@ -33,15 +33,22 @@ export function connect(props: Props) {
     });
   });
 
-  return new Promise<net.Server>((resolve) => {
-    tcpServer.listen(
-      {
-        host,
-        port,
-      },
-      () => {
-        resolve(tcpServer);
-      }
-    );
-  });
+  const disconnect = () => {
+    tcpServer.close();
+    node.destroy();
+  };
+
+  return new Promise<{ tcpServer: net.Server; disconnect: () => void }>(
+    (resolve) => {
+      tcpServer.listen(
+        {
+          host,
+          port,
+        },
+        () => {
+          resolve({ tcpServer, disconnect });
+        }
+      );
+    }
+  );
 }

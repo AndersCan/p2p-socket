@@ -9,6 +9,7 @@ import kleur from "kleur";
 import type { Identity, SerializedIdentity } from "./src/identity.js";
 import { APP_VERSION, DEBUG } from "./env.js";
 import { setLogLevel } from "./src/logger.js";
+import { goodbye } from "./src/goodbye.js";
 
 if (DEBUG) {
   setLogLevel(30);
@@ -87,13 +88,16 @@ function addConnectCommand(program: Command) {
     .action(async (options) => {
       const { host, port, remoteKey } = options;
 
-      const tcpServer = await connect({
+      const { tcpServer, disconnect } = await connect({
         tcp: {
           host,
           port: Number(port),
         },
         remotePublicKey: Buffer.from(remoteKey, "hex"),
       });
+
+      goodbye(() => disconnect());
+
       const address = tcpServer.address();
 
       let listenPort: number = 0;
@@ -134,6 +138,8 @@ function addShareCommand(program: Command) {
         },
         keyPair: identity.keyPair,
       });
+
+      goodbye(() => proxy.unshare());
 
       const remoteKey = proxy.hostAndKeyPair.publicKey.toString("hex");
 

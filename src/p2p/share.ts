@@ -59,5 +59,10 @@ export async function share(props: Props) {
 
   await p2pServer.listen(hostAndKeyPair);
 
-  return { p2pServer, hostAndKeyPair };
+  const unshare = () => {
+    p2pServer.close();
+    node.destroy();
+  };
+
+  return { p2pServer, hostAndKeyPair, unshare };
 }

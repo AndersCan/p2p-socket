@@ -29,6 +29,10 @@
   ],
   "author": "AndersCan",
   "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/AndersCan/p2p-socket/issues"
+  },
+  "homepage": "https://github.com/AndersCan/p2p-socket#readme",
   "prettier": {
     "printWidth": 80
   },

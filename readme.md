@@ -1,15 +1,22 @@
+<div align="center">
+
 ![Banner image of three pears](https://raw.githubusercontent.com/AndersCan/p2p-socket/main/banner.jpg)
 
 # p2p-socket
 
+---
+
 Connect two machines across the web together via the [@hyperswarm/dht](https://github.com/holepunchto/hyperswarm-dht).
+
+---
+
+</div>
 
 ## Highlights
 
-- Free
-- Encrypted end-to-end.
 - No sentral server
   - Connections are direct between machines (Peer to Peer)
+- Encrypted end-to-end.
 
 Run `npx p2p-socket --help` for usage instuctions. Currently only supports TCP, but UDP can/will be added later.
 

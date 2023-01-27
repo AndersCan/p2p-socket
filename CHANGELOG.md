@@ -1,5 +1,11 @@
 # p2p-socket
 
+## 0.0.15
+
+### Patch Changes
+
+- 8ece36e: upgrade deps
+
 ## 0.0.14
 
 ### Patch Changes

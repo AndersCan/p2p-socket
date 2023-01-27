@@ -1,8 +1,8 @@
 <div align="center">
 
-![Banner image of three pears](https://raw.githubusercontent.com/AndersCan/p2p-socket/main/banner.jpg)
-
 # p2p-socket
+
+![Banner image of three pears](https://raw.githubusercontent.com/AndersCan/p2p-socket/main/banner.jpg)
 
 ---
 

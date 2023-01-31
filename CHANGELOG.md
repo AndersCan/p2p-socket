@@ -1,5 +1,11 @@
 # p2p-socket
 
+## 0.0.17
+
+### Patch Changes
+
+- ignore more stream errors
+
 ## 0.0.16
 
 ### Patch Changes

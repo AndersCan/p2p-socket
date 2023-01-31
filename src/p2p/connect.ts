@@ -28,7 +28,10 @@ export function connect(props: Props) {
 
     pipeline(socket, p2pSocket, socket, (err) => {
       if (err) {
-        const thisIsFine = err.code === "ERR_STREAM_PREMATURE_CLOSE";
+        // TODO: Investigate socket errors (https://www.howtouselinux.com/post/check-connection-reset-by-peer)
+        const thisIsFine =
+          err.code === "ERR_STREAM_PREMATURE_CLOSE" ||
+          err.message === "Writable stream closed prematurely";
         if (thisIsFine) {
           return;
         }

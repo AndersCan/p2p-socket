@@ -51,7 +51,10 @@ export async function share(props: Props) {
 
     pipeline(noiseSocket, requestSocket, noiseSocket, (err) => {
       if (err) {
-        const thisIsFine = err.code === "ERR_STREAM_PREMATURE_CLOSE";
+        // TODO: Investigate socket errors (https://www.howtouselinux.com/post/check-connection-reset-by-peer)
+        const thisIsFine =
+          err.code === "ERR_STREAM_PREMATURE_CLOSE" ||
+          err.code === "ECONNRESET";
         if (thisIsFine) {
           return;
         }

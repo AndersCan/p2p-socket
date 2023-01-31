@@ -15,17 +15,40 @@ export interface KeyPair {
 }
 
 export const DHT = untyped_DHT as DHT_Typed;
+
+type NodeOptions = {
+  /**
+   * Is autoconfigured and should not be used.
+   * Override only for tests.
+   **/
+  ephemeral?: boolean;
+  firewalled?: boolean;
+  bootstrap?: Array<{ host: string; port: number }>;
+  port?: number;
+};
 interface DHT_Typed {
-  new (): Node;
+  new (options?: NodeOptions): Node;
   keyPair(seed?: Buffer): KeyPair;
 }
 
 interface CreateServerProps {
-  firewall: (remotePublicKey: string, remoteHandshakePayload: any) => boolean;
+  firewall: (remotePublicKey: Buffer, remoteHandshakePayload: any) => boolean;
 }
 
-interface Node {
-  connect: (remoteKey: Buffer) => Socket;
+interface ConnectProps {
+  keyPair?: KeyPair;
+}
+export interface Node {
+  connect: (remoteKey: Buffer, props?: ConnectProps) => Socket;
   createServer(props: CreateServerProps): Server;
-  destroy(): void;
+  ready(): Promise<void>;
+  address(): {
+    /** external IP of the server */
+    host: string;
+    /** external port of the server if predictable */
+    port: number;
+    /** public key of the server */
+    publicKey: Buffer;
+  };
+  destroy(): Promise<void>;
 }

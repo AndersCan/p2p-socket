@@ -1,5 +1,11 @@
 # p2p-socket
 
+## 0.0.16
+
+### Patch Changes
+
+- 5fe663a: add extra types + local test
+
 ## 0.0.15
 
 ### Patch Changes

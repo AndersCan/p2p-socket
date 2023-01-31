@@ -16,12 +16,13 @@ interface Props {
     secretKey: Buffer;
     publicKey: Buffer;
   };
+  bootstrap?: Array<{ host: string; port: number }>;
 }
 /**
  * Share a p2p-socket
  */
 export async function share(props: Props) {
-  const node = new DHT();
+  const node = new DHT({ bootstrap: props.bootstrap });
 
   const { host, port } = props.tcp;
   const seed = `${host}:${port}:${props.keyPair.secretKey.toString("hex")}`;
@@ -30,12 +31,11 @@ export async function share(props: Props) {
 
   // create a server to listen for secure connections
   const p2pServer = node.createServer({
-    firewall(remotePublicKey: string, remoteHandshakePayload: any) {
+    firewall(_remotePublicKey: Buffer, _remoteHandshakePayload: any) {
       // validate if you want a connection from remotePublicKey
       // if you do return false, else return true
       // remoteHandshakePayload contains their ip and some more info
-      // console.log("firewall: ", { remotePublicKey, remoteHandshakePayload });
-      getLogger().info(kleur.bgGreen(`${remotePublicKey} connected`));
+      getLogger().info(kleur.bgGreen(`A peer has connected`));
       return false;
     },
   });
@@ -51,7 +51,11 @@ export async function share(props: Props) {
 
     pipeline(noiseSocket, requestSocket, noiseSocket, (err) => {
       if (err) {
-        getLogger().error("pipeline failed: ", err);
+        const thisIsFine = err.code === "ERR_STREAM_PREMATURE_CLOSE";
+        if (thisIsFine) {
+          return;
+        }
+        getLogger().error(err);
         return;
       }
     });
@@ -64,5 +68,8 @@ export async function share(props: Props) {
     node.destroy();
   };
 
+  /**
+   * hostAndKeyPair: keyPair derived from host and port
+   */
   return { p2pServer, hostAndKeyPair, unshare };
 }

@@ -12,22 +12,27 @@ interface Props {
     port: number;
   };
   remotePublicKey: Buffer;
+  bootstrap?: Array<{ host: string; port: number }>;
 }
 /**
  * Connect to a p2p-socket
  */
 export function connect(props: Props) {
-  const node = new DHT();
-
+  const keyPair = DHT.keyPair();
+  const node = new DHT({ bootstrap: props.bootstrap });
   const { host, port } = props.tcp;
   const tcpServer = net.createServer();
 
   tcpServer.on("connection", (socket) => {
-    const p2pSocket = node.connect(props.remotePublicKey);
+    const p2pSocket = node.connect(props.remotePublicKey, { keyPair });
 
     pipeline(socket, p2pSocket, socket, (err) => {
       if (err) {
-        getLogger().error("pipeline failed: ", err);
+        const thisIsFine = err.code === "ERR_STREAM_PREMATURE_CLOSE";
+        if (thisIsFine) {
+          return;
+        }
+        getLogger().error(err);
         return;
       }
     });

@@ -50,7 +50,7 @@ Bob can now access `localhost:3000` and reach Alice.
 
 To avoid having to reshare your connection information each time you restart your server, run `npx p2p-socket create-id`. This will create an `identity.json` file locally. This will enable a consistent `remote-key`.
 
-> Note: The key will still change if you change `port`
+> Note: The key will still change if you change `host` and `port`
 
 ## Acknowledgements
 

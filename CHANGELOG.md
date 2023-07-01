@@ -1,5 +1,11 @@
 # p2p-socket
 
+## 0.0.18
+
+### Patch Changes
+
+- e7bd1fc: update packages
+
 ## 0.0.17
 
 ### Patch Changes

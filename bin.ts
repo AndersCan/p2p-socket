@@ -21,7 +21,7 @@ const program = new Command();
 
 program
   .name("p2p-socket")
-  .description("Use the @hyperswarm/dht to share and connect to p2p-sockets")
+  .description("Use the hyperdht to share and connect to p2p-sockets")
   .version(APP_VERSION);
 
 addShareCommand(program);

@@ -1,5 +1,5 @@
-//@ts-expect-error "@hyperswarm/dht" is untyped :(
-import untyped_DHT from "@hyperswarm/dht";
+//@ts-expect-error "hyperdht" is untyped :(
+import untyped_DHT from "hyperdht";
 import type { Socket } from "net";
 import { Duplex } from "stream";
 

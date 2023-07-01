@@ -6,7 +6,7 @@
 
 ---
 
-Connect two machines across the web together via the [@hyperswarm/dht](https://github.com/holepunchto/hyperswarm-dht).
+Connect two machines across the web together via the [hyperdht](https://github.com/holepunchto/hyperswarm-dht).
 
 ---
 

@@ -1,5 +1,11 @@
 # p2p-socket
 
+## 0.0.20
+
+### Patch Changes
+
+- fix publish
+
 ## 0.0.19
 
 ### Patch Changes

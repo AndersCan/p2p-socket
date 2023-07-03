@@ -4,7 +4,8 @@
 import { DHT } from "./dht";
 import { connect } from "net";
 import { createKeyPair } from "../create-key-pair";
-import { Duplex, pipeline } from "stream";
+import { socketPipe } from "../proxy/socket-pipe";
+import { Duplex } from "stream";
 import kleur from "kleur";
 import { getLogger } from "../logger";
 interface Props {
@@ -40,31 +41,26 @@ export async function share(props: Props) {
     },
   });
 
+  // noiseSocket is a `https://github.com/holepunchto/hyperswarm-secret-stream`
   p2pServer.on("connection", function (noiseSocket: Duplex) {
+    getLogger().info(`new connection`);
     const host = props.tcp.host;
     const port = props.tcp.port;
+
+    const id = `${Math.random()}`.slice(2);
 
     const requestSocket = connect({
       port,
       host,
     });
 
-    pipeline(noiseSocket, requestSocket, noiseSocket, (err) => {
-      if (err) {
-        // TODO: Investigate socket errors (https://www.howtouselinux.com/post/check-connection-reset-by-peer)
-        const thisIsFine =
-          err.code === "ERR_STREAM_PREMATURE_CLOSE" ||
-          err.code === "ECONNRESET";
-        if (thisIsFine) {
-          return;
-        }
-        getLogger().error(err);
-        return;
-      }
-    });
+    socketPipe(noiseSocket, requestSocket, id);
   });
 
   await p2pServer.listen(hostAndKeyPair);
+
+  const { host: remoteHost, port: remotePort } = p2pServer.address();
+  getLogger().info("server.address()", { remoteHost, remotePort });
 
   const unshare = () => {
     p2pServer.close();

@@ -7,6 +7,11 @@ export interface Server {
   listen: (key: KeyPair) => void;
   on: (type: "connection", cb: (noiseSocket: Duplex) => void) => void;
   close(): void;
+  address(): {
+    host: string; // external IP of the server,
+    port: string; // external port of the server if predictable,
+    publicKey: Buffer; // public key of the server
+  };
 }
 
 export interface KeyPair {

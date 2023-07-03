@@ -1,5 +1,11 @@
 # p2p-socket
 
+## 0.0.19
+
+### Patch Changes
+
+- 05093ca: swap `stream#pipeline` for custom socket proxying
+
 ## 0.0.18
 
 ### Patch Changes

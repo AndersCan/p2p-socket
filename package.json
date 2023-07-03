@@ -1,6 +1,6 @@
 {
   "name": "p2p-socket",
-  "version": "0.0.18",
+  "version": "0.0.19",
   "description": "Use the hyperdht to share and connect to p2p-sockets.",
   "type": "module",
   "exports": {

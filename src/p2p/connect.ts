@@ -3,8 +3,7 @@
  **/
 import { DHT } from "./dht.js";
 import * as net from "net";
-import { pipeline } from "stream";
-import { getLogger } from "../logger.js";
+import { socketPipe } from "../proxy/socket-pipe.js";
 
 interface Props {
   tcp: {
@@ -24,21 +23,9 @@ export function connect(props: Props) {
   const tcpServer = net.createServer();
 
   tcpServer.on("connection", (socket) => {
+    const id = `${Math.random()}`.slice(2);
     const p2pSocket = node.connect(props.remotePublicKey, { keyPair });
-
-    pipeline(socket, p2pSocket, socket, (err) => {
-      if (err) {
-        // TODO: Investigate socket errors (https://www.howtouselinux.com/post/check-connection-reset-by-peer)
-        const thisIsFine =
-          err.code === "ERR_STREAM_PREMATURE_CLOSE" ||
-          err.message === "Writable stream closed prematurely";
-        if (thisIsFine) {
-          return;
-        }
-        getLogger().error(err);
-        return;
-      }
-    });
+    socketPipe(socket, p2pSocket, id);
   });
 
   const disconnect = () => {
